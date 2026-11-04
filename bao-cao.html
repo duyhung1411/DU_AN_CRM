@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Dashboard | Báo cáo Thống kê</title>
+
+    <!-- Kết nối chung file CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    
+    <!-- 1. SIDEBAR: Đặt trạng thái active vào mục "Báo cáo" -->
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon">Z</div>
+            <div class="logo-text">
+                <strong>CRM</strong>
+                <span>Quản Lý Khách Hàng</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li><a href="index.html"><span class="icon">🏠</span> Trang chủ</a></li>
+            <li><a href="khach-hang.html"><span class="icon">👥</span> Khách hàng</a></li>
+            <li><a href="don-hang.html"><span class="icon">📦</span> Đơn hàng</a></li>
+            <li><a href="san-pham.html"><span class="icon">🛍️</span> Sản phẩm</a></li>
+            <li><a href="bao-cao.html" class="active"><span class="icon">📊</span> Báo cáo</a></li>
+            <li><a href="cai-dat.html"><span class="icon">⚙️</span> Cài đặt</a></li>
+        </ul>
+
+        <div class="api-widget" id="exchangeRateWidget">
+            <h4>💱 Tỷ giá USD/VND</h4>
+            <p id="rateText">⏳ Đang tải...</p>
+            <button id="refreshRate">Cập nhật ngay</button>
+        </div>
+    </aside>
+
+    <!-- 2. MAIN CONTENT: Giao diện Báo cáo Thống kê chuẩn Figma -->
+    <main class="main-content">
+      
+      <!-- TOPBAR -->
+      <header class="top-bar">
+          <div class="search-box" style="flex: 1; max-width: 500px;">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Tìm kiếm khách hàng, đơn hàng, sản phẩm...">
+          </div>
+          
+          <div class="top-bar-right" style="display: flex; align-items: center; gap: 25px; margin-right: 20px;">
+              <div class="notification" style="position: relative; display: flex; align-items: center; cursor: pointer; font-size: 1.4rem;">
+                  <span>🔔</span>
+                  <span class="badge" style="position: absolute; top: -5px; right: -8px; background-color: #ef4444; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 2px solid #ffffff;">3</span>
+              </div>
+              
+              <div class="user-profile" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <div class="avatar" style="width: 42px; height: 42px; background-color: #f26d21; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">
+                      ĐH
+                  </div>
+                  <div class="user-info" style="display: flex; flex-direction: column;">
+                      <strong style="font-size: 0.95rem; color: #1e293b; white-space: nowrap;">Đoàn Duy Hưng</strong>
+                      <span style="font-size: 0.8rem; color: #64748b;">Admin ⌄</span>
+                  </div>
+              </div>
+          </div>
+      </header>
+
+      <!-- TIÊU ĐỀ VÀ BỘ LỌC THỜI GIAN -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Báo cáo - Thống kê</h2>
+          <div style="background: white; padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; color: #334155; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+              <span>📅 01/10/2024 - 31/10/2024</span>
+              <span>⌄</span>
+          </div>
+      </div>
+
+      <!-- 3. KHU VỰC CHÍNH CỦA BÁO CÁO -->
+      <div style="background: white; padding: 28px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+          
+          <!-- Thanh Tab Chuyển đổi báo cáo -->
+          <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px;">
+              <button style="background-color: #3b82f6; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);">Doanh thu</button>
+              <button style="background-color: #f8fafc; color: #475569; border: 1px solid #cbd5e1; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Đơn hàng</button>
+              <button style="background-color: #f8fafc; color: #475569; border: 1px solid #cbd5e1; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Khách hàng</button>
+              <button style="background-color: #f8fafc; color: #475569; border: 1px solid #cbd5e1; padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Sản phẩm</button>
+          </div>
+
+          <!-- Tiêu đề biểu đồ -->
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 24px;">Doanh thu theo tháng</h3>
+
+          <!-- Khung biểu đồ cột giả lập (Chart Mockup) -->
+          <div style="display: flex; flex-direction: column; height: 320px; justify-content: flex-end; position: relative; padding-bottom: 30px; border-left: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1; margin-left: 40px;">
+              
+              <!-- Các đường lưới ngang (Grid lines) -->
+              <div style="position: absolute; top: 0; left: 0; right: 0; border-top: 1px dashed #e2e8f0; width: 100%;"></div>
+              <span style="position: absolute; top: -8px; left: -45px; font-size: 0.75rem; color: #64748b;">20M</span>
+
+              <div style="position: absolute; top: 25%; left: 0; right: 0; border-top: 1px dashed #e2e8f0; width: 100%;"></div>
+              <span style="position: absolute; top: calc(25% - 8px); left: -45px; font-size: 0.75rem; color: #64748b;">15M</span>
+
+              <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #e2e8f0; width: 100%;"></div>
+              <span style="position: absolute; top: calc(50% - 8px); left: -45px; font-size: 0.75rem; color: #64748b;">10M</span>
+
+              <div style="position: absolute; top: 75%; left: 0; right: 0; border-top: 1px dashed #e2e8f0; width: 100%;"></div>
+              <span style="position: absolute; top: calc(75% - 8px); left: -35px; font-size: 0.75rem; color: #64748b;">5M</span>
+
+              <span style="position: absolute; bottom: -8px; left: -25px; font-size: 0.75rem; color: #64748b;">0</span>
+
+              <!-- Các cột biểu đồ từ T1 đến T12 -->
+              <div style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%; padding: 0 10px;">
+                  
+                  <!-- Cột T1 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 22%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T1</span>
+                  </div>
+
+                  <!-- Cột T2 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 35%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T2</span>
+                  </div>
+
+                  <!-- Cột T3 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 42%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T3</span>
+                  </div>
+
+                  <!-- Cột T4 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 56%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T4</span>
+                  </div>
+
+                  <!-- Cột T5 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 60%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T5</span>
+                  </div>
+
+                  <!-- Cột T6 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 75%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T6</span>
+                  </div>
+
+                  <!-- Cột T7 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 48%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T7</span>
+                  </div>
+
+                  <!-- Cột T8 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 66%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T8</span>
+                  </div>
+
+                  <!-- Cột T9 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 80%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T9</span>
+                  </div>
+
+                  <!-- Cột T10 (Cao nhất) -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 95%; background: #2563eb; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T10</span>
+                  </div>
+
+                  <!-- Cột T11 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 55%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T11</span>
+                  </div>
+
+                  <!-- Cột T12 -->
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 68%; background: #3b82f6; border-radius: 6px 6px 0 0;"></div>
+                      <span style="font-size: 0.8rem; color: #475569; font-weight: 500; position: absolute; bottom: -28px;">T12</span>
+                  </div>
+
+              </div>
+
+          </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

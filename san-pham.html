@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Dashboard | Quản lý Sản phẩm</title>
+
+    <!-- Kết nối chung file CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    
+    <!-- 1. SIDEBAR: Đặt trạng thái active vào mục "Sản phẩm" -->
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon">Z</div>
+            <div class="logo-text">
+                <strong>CRM</strong>
+                <span>Quản Lý Khách Hàng</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li><a href="index.html"><span class="icon">🏠</span> Trang chủ</a></li>
+            <li><a href="khach-hang.html"><span class="icon">👥</span> Khách hàng</a></li>
+            <li><a href="don-hang.html"><span class="icon">📦</span> Đơn hàng</a></li>
+            <li><a href="san-pham.html" class="active"><span class="icon">🛍️</span> Sản phẩm</a></li>
+            <li><a href="bao-cao.html"><span class="icon">📊</span> Báo cáo</a></li>
+            <li><a href="cai-dat.html"><span class="icon">⚙️</span> Cài đặt</a></li>
+        </ul>
+
+        <div class="api-widget" id="exchangeRateWidget">
+            <h4>💱 Tỷ giá USD/VND</h4>
+            <p id="rateText">⏳ Đang tải...</p>
+            <button id="refreshRate">Cập nhật ngay</button>
+        </div>
+    </aside>
+
+    <!-- 2. MAIN CONTENT: Giao diện Quản lý Sản phẩm điện tử -->
+    <main class="main-content">
+      
+      <!-- TOPBAR (Đã xóa thanh tìm kiếm thừa) -->
+      <header class="top-bar" style="justify-content: flex-end;">
+          <div class="top-bar-right" style="display: flex; align-items: center; gap: 25px; margin-right: 20px;">
+              <div class="notification" style="position: relative; display: flex; align-items: center; cursor: pointer; font-size: 1.4rem;">
+                  <span>🔔</span>
+                  <span class="badge" style="position: absolute; top: -5px; right: -8px; background-color: #ef4444; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 2px solid #ffffff;">3</span>
+              </div>
+              
+              <div class="user-profile" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <div class="avatar" style="width: 42px; height: 42px; background-color: #f26d21; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">
+                      ĐH
+                  </div>
+                  <div class="user-info" style="display: flex; flex-direction: column;">
+                      <strong style="font-size: 0.95rem; color: #1e293b; white-space: nowrap;">Đoàn Duy Hưng</strong>
+                      <span style="font-size: 0.8rem; color: #64748b;">Admin ⌄</span>
+                  </div>
+              </div>
+          </div>
+      </header>
+
+      <!-- TIÊU ĐỀ VÀ NÚT THÊM SẢN PHẨM -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div>
+              <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Quản lý sản phẩm</h2>
+              <p style="color: #64748b; font-size: 0.9rem;">Theo dõi, thêm mới và quản lý danh mục sản phẩm công nghệ trong hệ thống CRM.</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+              <div style="background: white; padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; color: #334155; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                  <span>📅 01/10/2024 - 31/10/2024</span>
+                  <span>⌄</span>
+              </div>
+              <button id="openModalBtn" style="background-color: #3b82f6; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);">
+                  + Thêm sản phẩm
+              </button>
+          </div>
+      </div>
+
+   <!-- 3. 4 THẺ THỐNG KÊ SẢN PHẨM (Đã xóa dòng thừa & gắn ID động) -->
+      <section style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #e0e7ff; color: #4f46e5; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin-bottom: 12px;">📦</div>
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Tổng số sản phẩm</p>
+            <h3 id="statTotalProducts" style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-top: 4px;">0</h3>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #d1fae5; color: #10b981; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin-bottom: 12px;">✅</div>
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Sản phẩm đang bán</p>
+            <h3 id="statSellingProducts" style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-top: 4px;">0</h3>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #fef3c7; color: #b45309; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin-bottom: 12px;">⚠️</div>
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Sản phẩm sắp hết hàng</p>
+            <h3 id="statLowStockProducts" style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-top: 4px;">0</h3>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #fee2e2; color: #ef4444; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin-bottom: 12px;">❌</div>
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Sản phẩm hết hàng</p>
+            <h3 id="statOutStockProducts" style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-top: 4px;">0</h3>
+        </div>
+      </section>
+
+      <!-- 4. BỐ CỤC CHÍNH: BẢNG SẢN PHẨM BÊN TRÁI & WIDGET DANH MỤC BÊN PHẢI -->
+      <div style="display: grid; grid-template-columns: 2.5fr 1fr; gap: 20px; margin-bottom: 30px;">
+          
+          <!-- Cột trái: Bảng danh sách sản phẩm -->
+          <div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0;">
+              
+              <!-- Bộ lọc toolbar trong bảng -->
+              <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
+                  <div style="flex: 2; position: relative;">
+                      <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8;">🔍</span>
+                      <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sản phẩm, mã sản phẩm..." style="width: 100%; padding: 10px 14px 10px 38px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.85rem; background: #f8fafc;">
+                  </div>
+                  <div style="flex: 1;">
+                      <select id="filterCategory" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.85rem; background: #f8fafc; color: #334155; cursor: pointer;">
+                          <option value="">Danh mục: Tất cả</option>
+                          <option value="Laptop">Laptop</option>
+                          <option value="Điện thoại">Điện thoại</option>
+                          <option value="Phụ kiện">Phụ kiện</option>
+                          <option value="Âm thanh">Âm thanh</option>
+                          <option value="Máy ảnh">Máy ảnh</option>
+                      </select>
+                  </div>
+                  <div style="flex: 1;">
+                      <select id="filterStatus" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.85rem; background: #f8fafc; color: #334155; cursor: pointer;">
+                          <option value="">Trạng thái: Tất cả</option>
+                          <option value="Còn hàng">Còn hàng</option>
+                          <option value="Sắp hết hàng">Sắp hết hàng</option>
+                          <option value="Hết hàng">Hết hàng</option>
+                      </select>
+                  </div>
+              </div>
+
+              <h3 style="font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">📦 Danh sách sản phẩm</h3>
+
+              <!-- Bảng dữ liệu sản phẩm -->
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+                  <thead>
+                      <tr style="color: #64748b; border-bottom: 2px solid #e2e8f0; background-color: #f8fafc;">
+                          <th style="padding: 10px 12px;">#</th>
+                          <th style="padding: 10px 12px;">Hình ảnh</th>
+                          <th style="padding: 10px 12px;">Tên sản phẩm</th>
+                          <th style="padding: 10px 12px;">Mã sản phẩm</th>
+                          <th style="padding: 10px 12px;">Danh mục</th>
+                          <th style="padding: 10px 12px;">Giá bán</th>
+                          <th style="padding: 10px 12px;">Tồn kho</th>
+                          <th style="padding: 10px 12px;">Trạng thái</th>
+                          <th style="padding: 10px 12px; text-align: center;">Thao tác</th>
+                      </tr>
+                  </thead>
+                  <tbody id="productTableBody">
+                      <!-- Dữ liệu được render động từ product.js -->
+                  </tbody>
+              </table>
+
+              <!-- PHÂN TRANG -->
+              <div id="paginationContainer" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px;"></div>
+
+          </div>
+
+          <!-- Cột phải: Chỉ giữ lại Widget Danh mục sản phẩm gọn gàng -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                      <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">📁 Danh mục sản phẩm</h4>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+                      <div onclick="filterByCategory('Laptop')" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                          <span style="color: #334155;">💻 Laptop</span>
+                          <span id="countLaptop" style="font-weight: 600; color: #64748b;">0</span>
+                      </div>
+                      <div onclick="filterByCategory('Điện thoại')" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                          <span style="color: #334155;">📱 Điện thoại</span>
+                          <span id="countPhone" style="font-weight: 600; color: #64748b;">0</span>
+                      </div>
+                      <div onclick="filterByCategory('Phụ kiện')" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                          <span style="color: #334155;">🔌 Phụ kiện</span>
+                          <span id="countAccessory" style="font-weight: 600; color: #64748b;">0</span>
+                      </div>
+                      <div onclick="filterByCategory('Âm thanh')" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                          <span style="color: #334155;">🎧 Âm thanh</span>
+                          <span id="countAudio" style="font-weight: 600; color: #64748b;">0</span>
+                      </div>
+                      <div onclick="filterByCategory('Máy ảnh')" style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                          <span style="color: #334155;">📷 Máy ảnh</span>
+                          <span id="countCamera" style="font-weight: 600; color: #64748b;">0</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL THÊM / SỬA SẢN PHẨM (Mặc định ẩn) -->
+  <div id="productModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+      <div style="background: white; width: 680px; max-width: 95%; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden;">
+          
+          <!-- Header Modal -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0;">
+              <h3 id="modalTitle" style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0;">Thêm sản phẩm mới</h3>
+              <button type="button" id="closeModalX" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">✕</button>
+          </div>
+
+          <!-- Form trong Modal -->
+          <form id="productForm" style="padding: 24px; display: flex; flex-direction: column; gap: 16px; max-height: 80vh; overflow-y: auto;">
+              
+              <!-- Hàng 1: Tên sản phẩm & Danh mục -->
+              <div style="display: flex; gap: 16px;">
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Tên sản phẩm <span style="color: red;">*</span></label>
+                      <input type="text" id="prodName" required placeholder="Nhập tên sản phẩm" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white;">
+                  </div>
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Danh mục <span style="color: red;">*</span></label>
+                      <select id="prodCategory" required style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white; cursor: pointer;">
+                          <option value="">Chọn danh mục</option>
+                          <option value="Laptop">Laptop</option>
+                          <option value="Điện thoại">Điện thoại</option>
+                          <option value="Phụ kiện">Phụ kiện</option>
+                          <option value="Âm thanh">Âm thanh</option>
+                          <option value="Máy ảnh">Máy ảnh</option>
+                      </select>
+                  </div>
+              </div>
+
+              <!-- Hàng 2: Mã sản phẩm & Giá bán -->
+              <div style="display: flex; gap: 16px;">
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Mã sản phẩm <span style="color: red;">*</span></label>
+                      <input type="text" id="prodId" required placeholder="Ví dụ: SP001" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white;">
+                  </div>
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Giá bán <span style="color: red;">*</span></label>
+                      <input type="number" id="prodPrice" required min="0" placeholder="Nhập giá bán (₫)" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white;">
+                  </div>
+              </div>
+
+              <!-- Hàng 3: Giá nhập & Tồn kho -->
+              <div style="display: flex; gap: 16px;">
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Giá nhập</label>
+                      <input type="number" id="prodImportPrice" min="0" placeholder="Nhập giá nhập (₫)" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white;">
+                  </div>
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Tồn kho <span style="color: red;">*</span></label>
+                      <input type="number" id="prodStock" required min="0" placeholder="Nhập số lượng tồn kho (cái)" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white;">
+                  </div>
+              </div>
+
+              <!-- Hàng 4: Trạng thái -->
+              <div>
+                  <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Trạng thái</label>
+                  <select id="prodStatus" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white; cursor: pointer;">
+                      <option value="Còn hàng">Còn hàng</option>
+                      <option value="Sắp hết hàng">Sắp hết hàng</option>
+                      <option value="Hết hàng">Hết hàng</option>
+                  </select>
+              </div>
+
+              <!-- Footer Modal Buttons -->
+              <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                  <button type="button" id="closeModalBtn" style="background: white; border: 1px solid #cbd5e1; color: #334155; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">Hủy</button>
+                  <button type="submit" id="saveProductBtn" style="background-color: #3b82f6; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);">Lưu sản phẩm</button>
+              </div>
+          </form>
+      </div>
+  </div>
+
+  <!-- Nạp các file JS -->
+  <script src="js/api.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/product.js"></script>
+</body>
+</html>

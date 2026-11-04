@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Dashboard | Quản lý Khách hàng</title>
+
+    <!-- Kết nối chung file CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    
+    <!-- 1. SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon">Z</div>
+            <div class="logo-text">
+                <strong>CRM</strong>
+                <span>Quản Lý Khách Hàng</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li><a href="index.html"><span class="icon">🏠</span> Trang chủ</a></li>
+            <li><a href="khach-hang.html" class="active"><span class="icon">👥</span> Khách hàng</a></li>
+            <li><a href="don-hang.html"><span class="icon">📦</span> Đơn hàng</a></li>
+            <li><a href="san-pham.html"><span class="icon">🛍️</span> Sản phẩm</a></li>
+            <li><a href="bao-cao.html"><span class="icon">📊</span> Báo cáo</a></li>
+            <li><a href="cai-dat.html"><span class="icon">⚙️</span> Cài đặt</a></li>
+        </ul>
+
+        <div class="api-widget" id="exchangeRateWidget">
+            <h4>💱 Tỷ giá USD/VND</h4>
+            <p id="rateText">⏳ Đang tải...</p>
+            <button id="refreshRate">Cập nhật ngay</button>
+        </div>
+    </aside>
+
+    <!-- 2. MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- TOPBAR -->
+      <header class="top-bar" style="display: flex; justify-content: flex-end; align-items: center;">
+          <div class="top-bar-right" style="display: flex; align-items: center; gap: 25px; margin-right: 20px;">
+              <div class="notification" style="position: relative; display: flex; align-items: center; cursor: pointer; font-size: 1.4rem;">
+                  <span>🔔</span>
+                  <span class="badge" style="position: absolute; top: -5px; right: -8px; background-color: #ef4444; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 2px solid #ffffff;">3</span>
+              </div>
+              
+              <div class="user-profile" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <div class="avatar" style="width: 42px; height: 42px; background-color: #f26d21; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">
+                      ĐH
+                  </div>
+                  <div class="user-info" style="display: flex; flex-direction: column;">
+                      <strong style="font-size: 0.95rem; color: #1e293b; white-space: nowrap;">Đoàn Duy Hưng</strong>
+                      <span style="font-size: 0.8rem; color: #64748b;">Admin ⌄</span>
+                  </div>
+              </div>
+          </div>
+      </header>
+
+      <!-- KHU VỰC NỘI DUNG QUẢN LÝ KHÁCH HÀNG -->
+      <div class="customer-management-container" style="background: white; padding: 24px 28px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);">
+          
+          <!-- Tiêu đề -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+              <div>
+                  <h2 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Quản lý Khách hàng</h2>
+                  <p style="font-size: 0.85rem; color: #64748b;">Tra cứu, cập nhật thông tin liên hệ và địa chỉ của khách hàng trong hệ thống.</p>
+              </div>
+          </div>
+
+          <!-- Thanh tìm kiếm và bộ lọc (Toolbar) -->
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+              <div style="flex: 2; position: relative;">
+                  <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8;">🔍</span>
+                  <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên, SĐT..." style="width: 100%; padding: 10px 14px 10px 38px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.9rem; background: #f8fafc;">
+              </div>
+              <div style="flex: 1;">
+                  <select style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.9rem; background: #f8fafc; color: #334155; cursor: pointer;">
+                      <option>Tất cả khách hàng</option>
+                      <option>Khách hàng mới</option>
+                  </select>
+              </div>
+              <div style="flex: 1;">
+                  <select style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 0.9rem; background: #f8fafc; color: #334155; cursor: pointer;">
+                      <option>Sắp xếp: Gần đây nhất</option>
+                      <option>Tên A-Z</option>
+                  </select>
+              </div>
+          </div>
+
+          <!-- Bảng danh sách khách hàng TRUNG TÂM -->
+          <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+              <table class="custom-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                  <thead>
+                      <tr style="background-color: #f1f5f9; color: #475569; font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">
+                          <th style="padding: 14px 16px; border-bottom: 1px solid #cbd5e1; width: 5%;">#</th>
+                          <th style="padding: 14px 16px; border-bottom: 1px solid #cbd5e1; width: 20%;">HỌ TÊN</th>
+                          <th style="padding: 14px 16px; border-bottom: 1px solid #cbd5e1; width: 15%;">SĐT</th>
+                          <th style="padding: 14px 16px; border-bottom: 1px solid #cbd5e1; width: 45%; text-align: left;">ĐỊA CHỈ</th>
+                          <th style="padding: 14px 16px; text-align: center; border-bottom: 1px solid #cbd5e1; width: 15%;">THAO TÁC</th>
+                      </tr>
+                  </thead>
+                  <tbody id="customerTableBody" style="font-size: 0.9rem;">
+                      <!-- Dữ liệu JS sẽ render vào đây -->
+                  </tbody>
+              </table>
+          </div>
+
+          <!-- PHÂN TRANG ĐỘNG -->
+          <div id="paginationContainer" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 20px;"></div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MODAL CHỈNH SỬA THÔNG TIN KHÁCH HÀNG ĐỒNG BỘ -->
+  <div id="editCustomerModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+      <div style="background: white; width: 800px; max-width: 95%; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden; display: flex; flex-direction: column;">
+          
+          <div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+              <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">👤 Chỉnh sửa thông tin khách hàng</h3>
+              <button type="button" onclick="document.getElementById('editCustomerModal').style.display='none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #64748b;">✕</button>
+          </div>
+
+          <div style="padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+              <input type="hidden" id="editCusId">
+              
+              <div style="display: flex; gap: 16px;">
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Số điện thoại <span style="color: red;">*</span></label>
+                      <input type="text" id="editCusPhone" placeholder="Nhập số điện thoại..." style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white; font-size: 0.85rem;">
+                  </div>
+                  <div style="flex: 1;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px;">Họ tên <span style="color: red;">*</span></label>
+                      <input type="text" id="editCusName" placeholder="Tên khách hàng" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white; font-size: 0.85rem;">
+                  </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155;">Địa chỉ giao hàng (Phân cấp chuẩn hành chính) <span style="color: red;">*</span></label>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                      <div>
+                          <select id="editProvince" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white; font-size: 0.85rem; cursor: pointer;">
+                              <option value="">-- Tỉnh / Thành phố --</option>
+                          </select>
+                      </div>
+                      <div>
+                          <select id="editDistrict" disabled style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: #f1f5f9; font-size: 0.85rem; cursor: pointer;">
+                              <option value="">-- Quận / Huyện --</option>
+                          </select>
+                      </div>
+                      <div>
+                          <select id="editWard" disabled style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: #f1f5f9; font-size: 0.85rem; cursor: pointer;">
+                              <option value="">-- Phường / Xã --</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div>
+                      <input type="text" id="editStreet" placeholder="Số nhà, tên đường (Ví dụ: 59 Tân Lập)..." style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: white; font-size: 0.85rem;">
+                  </div>
+                  <div style="background: #e2e8f0; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; color: #334155; display: flex; align-items: center; gap: 8px;">
+                      <span style="font-weight: 700; color: #1e293b; white-space: nowrap;">📍 Địa chỉ cụ thể:</span>
+                      <span id="editFullAddressText" style="color: #2563eb; font-weight: 600;">Chưa xác định</span>
+                      <input type="hidden" id="editFullAddressInput">
+                  </div>
+              </div>
+          </div>
+
+          <div style="padding: 16px 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 12px; background: #f8fafc;">
+              <button type="button" onclick="document.getElementById('editCustomerModal').style.display='none'" style="padding: 10px 20px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; cursor: pointer; color: #334155;">Hủy</button>
+              <button type="button" id="saveEditCustomerBtn" style="padding: 10px 24px; border: none; background: #3b82f6; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);">Lưu cập nhật</button>
+          </div>
+      </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/customer.js"></script>
+</body>
+</html>

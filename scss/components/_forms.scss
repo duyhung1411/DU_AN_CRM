@@ -1,0 +1,55 @@
+@use '../abstracts/variables' as *;
+
+// 1. Trang trí khu vực Form thành 1 cái Thẻ (Card) trắng nổi lên
+.form-section, .data-board {
+  background-color: $bg-white;
+  padding: 24px;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  margin-bottom: 30px; // Cách các khối ra cho thoáng
+
+  h3, h2 {
+    color: $text-main;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+  }
+}
+
+// 2. Trang trí ô nhập liệu (Input)
+input[type="text"], 
+input[type="number"] {
+  padding: 12px 16px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+
+  // Hiệu ứng khi click chuột vào ô nhập
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  }
+}
+
+// 3. Trang trí Nút bấm (Button)
+.btn-primary {
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease; // Chuyển động mượt mà
+
+  // Hiệu ứng khi rê chuột vào (Nesting SCSS)
+  &:hover {
+    background-color: $primary-hover;
+    transform: translateY(-2px); // Nút nảy lên một chút
+    box-shadow: $box-shadow-hover;
+  }
+}
